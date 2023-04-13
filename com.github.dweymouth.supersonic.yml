@@ -62,6 +62,22 @@ modules:
           project-id: 5116
           stable-only: true
           url-template: https://waf.io/waf-$version
+
+  # this is used to bundle the final supersonic command correctly and
+  # provides the /app/bin/fyne command to the next module
+  - name: finecmd
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/golang/bin
+      env:
+        GOBIN: /app/bin
+      # TODO: remove this and get each dependency properly, then add
+      # `GO111MODULE: off` above
+      build-args:
+        - --share=network
+    build-commands:
+      - . /usr/lib/sdk/golang/enable.sh && go install -v fyne.io/fyne/v2/cmd/fyne@v2.3.3
+
   - name: supersonic
     buildsystem: simple
     build-options:
@@ -73,17 +89,12 @@ modules:
       build-args:
         - --share=network
     build-commands:
-      - . /usr/lib/sdk/golang/enable.sh && go install fyne.io/fyne/v2/cmd/fyne@v2.3.3
       - . /usr/lib/sdk/golang/enable.sh && CGO_LDFLAGS=-L/app/lib go build -v .
       - install -Dm755 -t /app/bin supersonic
     sources:
       - type: archive
         url: https://github.com/dweymouth/supersonic/archive/refs/tags/v0.1.0-beta.tar.gz
         sha256: 4baeea51f759c6571bb0e6450e3928838640bb9df80bded77cd8a15528c85163
-      - type: archive
-        url: https://github.com/fyne-io/fyne/archive/refs/tags/v2.3.3.tar.gz
-        sha256: 239ed91d11c986f3be292b73fcfe7e3ffb7a5059dca64e6e928f054e12436b6c
-        dest: go/src/github.com/fyne-io/fyne
     post-install:
       # workaround for go annoyance
       - chmod -R u+w $FLATPAK_BUILDER_BUILDDIR
