@@ -11,8 +11,6 @@ finish-args:
   # Fallback X11 + XShm access
   - --socket=fallback-x11
   - --share=ipc
-  # trying everything
-  - --device=all
   # for network, obviously
   - --share=network
   # for audio
