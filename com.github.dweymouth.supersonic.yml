@@ -90,6 +90,7 @@ modules:
         - --share=network
     build-commands:
       - . /usr/lib/sdk/golang/enable.sh && CGO_LDFLAGS=-L/app/lib go build -v .
+      - . /usr/lib/sdk/golang/enable.sh && /app/bin/fyne package -os linux -name Supersonic -icon ./res/appicon-500.png
       - install -Dm755 -t /app/bin supersonic
     sources:
       - type: archive
