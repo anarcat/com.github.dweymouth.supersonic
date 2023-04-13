@@ -1,0 +1,84 @@
+app-id: com.github.dweymouth.supersonic
+runtime: org.freedesktop.Platform
+runtime-version: '22.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
+command: supersonic
+finish-args:
+  # Wayland
+  - --socket=wayland
+  # Fallback X11 + XShm access
+  - --socket=fallback-x11
+  - --share=ipc
+  # for network, obviously
+  - --share=network
+  # for audio
+  - --socket=pulseaudio
+  # System tray icon
+  - --talk-name=org.kde.StatusNotifierWatcher
+  # cargo-cult from https://github.com/flathub/com.github.iwalton3.jellyfin-mpv-shim/blob/master/com.github.iwalton3.jellyfin-mpv-shim.json
+  - --talk-name=org.gnome.SettingsDaemon.MediaKeys
+modules:
+  - name: libass
+    sources:
+      - type: archive
+        url: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
+        sha256: f0da0bbfba476c16ae3e1cfd862256d30915911f7abaa1b16ce62ee653192784
+        x-checker-data:
+          type: anitya
+          project-id: 1560
+          stable-only: true
+          url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.xz
+      - type: script
+        commands:
+          - autoreconf -fiv
+        dest-filename: autogen.sh
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share
+  - name: mpv
+    buildsystem: simple
+    build-commands:
+      - python3 waf configure --prefix=${FLATPAK_DEST} --disable-cplayer --disable-lua --disable-build-date --disable-manpage-build --disable-debug-build  --disable-tv --disable-uchardet --disable-javascript --enable-vaapi --enable-pulse --enable-alsa --enable-libmpv-shared
+      - python3 waf build
+      - python3 waf install
+    sources:
+      - type: archive
+        url: https://github.com/mpv-player/mpv/archive/refs/tags/v0.35.1.tar.gz
+        sha256: 41df981b7b84e33a2ef4478aaf81d6f4f5c8b9cd2c0d337ac142fc20b387d1a9
+        x-checker-data:
+          type: anitya
+          project-id: 5348
+          stable-only: true
+          url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
+      - type: file
+        url: https://waf.io/waf-2.0.25
+        sha256: 21199cd220ccf60434133e1fd2ab8c8e5217c3799199c82722543970dc8e38d5
+        dest-filename: waf
+        x-checker-data:
+          type: anitya
+          project-id: 5116
+          stable-only: true
+          url-template: https://waf.io/waf-$version
+  - name: supersonic
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/golang/bin
+      env:
+        GOBIN: /app/bin
+      # TODO: remove this and get each dependency properly, then add
+      # `GO111MODULE: off` above
+      build-args:
+        - --share=network
+    build-commands:
+      - . /usr/lib/sdk/golang/enable.sh && CGO_LDFLAGS=-L/app/lib go build -v .
+      - install -Dm755 -t /app/bin supersonic
+    sources:
+      - type: archive
+        url: https://github.com/dweymouth/supersonic/archive/refs/tags/v0.1.0-beta.tar.gz
+        sha256: 4baeea51f759c6571bb0e6450e3928838640bb9df80bded77cd8a15528c85163
+    post-install:
+      # workaround for go annoyance
+      - chmod -R u+w $FLATPAK_BUILDER_BUILDDIR
