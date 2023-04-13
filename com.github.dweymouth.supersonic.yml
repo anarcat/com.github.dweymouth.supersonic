@@ -1,3 +1,12 @@
+# this doesn't work yet
+#
+# example flatpaks:
+# https://github.com/search?q=org%3Aflathub+golang+&type=code&p=2
+# https://github.com/search?q=org%3Aflathub+GLFW+&type=code
+#
+# followup on:
+# https://discourse.flathub.org/t/supersonic-lightweight-cross-platform-desktop-client-for-subsonic-music-servers/3984/2
+# https://github.com/dweymouth/supersonic/issues/86
 app-id: com.github.dweymouth.supersonic
 runtime: org.freedesktop.Platform
 runtime-version: '22.08'
@@ -73,6 +82,20 @@ modules:
         GOBIN: /app/bin
       # TODO: remove this and get each dependency properly, then add
       # `GO111MODULE: off` above
+      #
+      # package list could be generated with:
+      # https://github.com/divVerent/aaaaxy/blob/main/scripts/go-vendor-to-flatpak-yml.sh
+      # https://github.com/flathub/com.yktoo.ymuse/blob/7c33add48cfc6788b9ddf0c92ee7213f40c6c78e/com.yktoo.ymuse.yml#L57-L63
+      #
+      # this doesn't work so well:
+      # https://github.com/flatpak/flatpak-builder-tools/tree/master/go-get
+      # ... because it generates git links, which are much slower
+      #
+      # other examples:
+      # https://github.com/flathub/me.kozec.syncthingtk/blob/cf25336132b96c514f29d5a5322874e847aba150/syncthing.yaml
+      #
+      # also used:
+      # https://github.com/search?q=org%3Aflathub+++mpv&type=code
       build-args:
         - --share=network
     build-commands:
