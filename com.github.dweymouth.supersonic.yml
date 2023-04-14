@@ -142,11 +142,9 @@ modules:
       - tar -C /app --strip-components=1 -x -v -f /run/build/supersonic/Supersonic.tar.xz
       - ls -al /app/bin/supersonic
     sources:
-      - type: archive
-        url: https://github.com/dweymouth/supersonic/archive/refs/tags/v0.1.0-beta.tar.gz
-        sha256: 4baeea51f759c6571bb0e6450e3928838640bb9df80bded77cd8a15528c85163
-      - type: patch
-        path: 0001-add-debugging-statements-when-playing.patch
+      - type: git
+        url: https://github.com/dweymouth/supersonic/
+        commit: 440dee15ac1bb42fcd899578576098542ffc4a19
     post-install:
       # workaround for go annoyance
       - chmod -R u+w $FLATPAK_BUILDER_BUILDDIR
