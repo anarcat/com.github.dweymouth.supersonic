@@ -59,25 +59,6 @@ finish-args:
   ##- --talk-name=org.gnome.SettingsDaemon.MediaKeys
 
 modules:
-  - name: libass
-    sources:
-      - type: archive
-        url: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
-        sha256: f0da0bbfba476c16ae3e1cfd862256d30915911f7abaa1b16ce62ee653192784
-        x-checker-data:
-          type: anitya
-          project-id: 1560
-          stable-only: true
-          url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.xz
-      - type: script
-        commands:
-          - autoreconf -fiv
-        dest-filename: autogen.sh
-    cleanup:
-      - /include
-      - /lib/pkgconfig
-      - /share
-
   - name: mpv
     buildsystem: meson
     build-options:
@@ -110,6 +91,25 @@ modules:
           project-id: 5348
           stable-only: true
           url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
+    modules:
+    - name: libass
+      sources:
+        - type: archive
+          url: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
+          sha256: f0da0bbfba476c16ae3e1cfd862256d30915911f7abaa1b16ce62ee653192784
+          x-checker-data:
+            type: anitya
+            project-id: 1560
+            stable-only: true
+            url-template: https://github.com/libass/libass/releases/download/$version/libass-$version.tar.xz
+        - type: script
+          commands:
+            - autoreconf -fiv
+          dest-filename: autogen.sh
+      cleanup:
+        - /include
+        - /lib/pkgconfig
+        - /share
 
   # this is used to bundle the final supersonic command correctly and
   # provides the /app/bin/fyne command to the next module
