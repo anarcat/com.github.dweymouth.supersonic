@@ -18,22 +18,36 @@ command: supersonic
 finish-args:
   # Wayland
   #- --socket=wayland
+  # from https://github.com/flathub/im.riot.Riot/blob/ff59f1ac426823e95444d67c763cd92523f1db4e/im.riot.Riot.yaml#L37
+  # Required for experimental wayland support
+  #- --filesystem=xdg-run/pipewire-0
+  # For correct cursor scaling under Wayland
+  #- --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons
   # X11 + XShm access
   - --socket=x11
   - --share=ipc
+  # for audio, hopefully
+  - --socket=pulseaudio
   # Required to store access tokens (persistent logins)
   - --filesystem=xdg-run/keyring
+  # seems like we also need those:
   # from https://github.com/flathub/com.jetbrains.IntelliJ-IDEA-Community/blob/846e9b59fc9b644782864bcc44b1e204869cc980/com.jetbrains.IntelliJ-IDEA-Community.yaml#L11
   - --talk-name=org.freedesktop.secrets
   - --talk-name=org.gnome.keyring.SystemPrompter
   # for network, obviously
   - --share=network
-  # for audio
-  - --socket=pulseaudio
-  # System tray icon
-  - --talk-name=org.kde.StatusNotifierWatcher
-  # cargo-cult from https://github.com/flathub/com.github.iwalton3.jellyfin-mpv-shim/blob/master/com.github.iwalton3.jellyfin-mpv-shim.json
-  - --talk-name=org.gnome.SettingsDaemon.MediaKeys
+  #
+  # System tray icon doesn't work anyway
+  ## Required for notifications in various desktop environments
+  #- --talk-name=org.freedesktop.Notifications
+  #- --talk-name=org.kde.StatusNotifierWatcher
+  ## Required for tray icons on KDE
+  #- --own-name=org.kde.*
+  #
+  # might be useful for media keys?
+  ## cargo-cult from https://github.com/flathub/com.github.iwalton3.jellyfin-mpv-shim/blob/master/com.github.iwalton3.jellyfin-mpv-shim.json
+  ##- --talk-name=org.gnome.SettingsDaemon.MediaKeys
+
 modules:
   - name: libass
     sources:
@@ -53,6 +67,7 @@ modules:
       - /include
       - /lib/pkgconfig
       - /share
+
   - name: mpv
     buildsystem: simple
     build-commands:
