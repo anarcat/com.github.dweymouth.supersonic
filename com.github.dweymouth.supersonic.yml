@@ -21,6 +21,11 @@ finish-args:
   # X11 + XShm access
   - --socket=x11
   - --share=ipc
+  # Required to store access tokens (persistent logins)
+  - --filesystem=xdg-run/keyring
+  # from https://github.com/flathub/com.jetbrains.IntelliJ-IDEA-Community/blob/846e9b59fc9b644782864bcc44b1e204869cc980/com.jetbrains.IntelliJ-IDEA-Community.yaml#L11
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.gnome.keyring.SystemPrompter
   # for network, obviously
   - --share=network
   # for audio
