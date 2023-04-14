@@ -99,6 +99,8 @@ modules:
           url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
     modules:
     - name: libass
+      config-opts:
+        - --disable-static
       sources:
         - type: archive
           url: https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
