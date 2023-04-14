@@ -73,11 +73,28 @@ modules:
       - /share
 
   - name: mpv
-    buildsystem: simple
-    build-commands:
-      - python3 waf configure --prefix=${FLATPAK_DEST} --disable-cplayer --disable-lua --disable-build-date --disable-manpage-build --disable-debug-build  --disable-tv --disable-uchardet --disable-javascript --enable-vaapi --enable-pulse --enable-alsa --enable-libmpv-shared
-      - python3 waf build
-      - python3 waf install
+    buildsystem: meson
+    build-options:
+      env:
+        CFLAGS=-DNDEBUG=1
+    config-opts:
+      - -Dbuild-date=false
+      - -Dlibmpv=true
+      - -Dmanpage-build=disabled
+      - -Dalsa=enabled
+      - -Dcdda=disabled
+      - -Ddvbin=disabled
+      - -Ddvdnav=disabled
+      - -Djavascript=disabled
+      - -Dlibarchive=disabled
+      - -Dlua=disabled
+      - -Dpulse=enabled
+      - -Dsdl2=disabled
+      - -Dshaderc=disabled
+      - -Dvulkan=disabled
+    cleanup:
+      - /include
+      - /lib/pkgconfig
     sources:
       - type: archive
         url: https://github.com/mpv-player/mpv/archive/refs/tags/v0.35.1.tar.gz
@@ -87,15 +104,6 @@ modules:
           project-id: 5348
           stable-only: true
           url-template: https://github.com/mpv-player/mpv/archive/refs/tags/v$version.tar.gz
-      - type: file
-        url: https://waf.io/waf-2.0.25
-        sha256: 21199cd220ccf60434133e1fd2ab8c8e5217c3799199c82722543970dc8e38d5
-        dest-filename: waf
-        x-checker-data:
-          type: anitya
-          project-id: 5116
-          stable-only: true
-          url-template: https://waf.io/waf-$version
 
   # this is used to bundle the final supersonic command correctly and
   # provides the /app/bin/fyne command to the next module
