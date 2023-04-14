@@ -17,12 +17,18 @@ command: supersonic
 
 finish-args:
   # Wayland
-  #- --socket=wayland
+  - --socket=wayland
   # from https://github.com/flathub/im.riot.Riot/blob/ff59f1ac426823e95444d67c763cd92523f1db4e/im.riot.Riot.yaml#L37
   # Required for experimental wayland support
   #- --filesystem=xdg-run/pipewire-0
+  # io.mpv.Mpv does this:
+  - --filesystem=xdg-run/pipewire-0:ro
+  - --filesystem=/tmp:rw
+  #  mpris support via dbus
+  - --own-name=org.mpris.MediaPlayer2.mpv.*
+  - --talk-name=org.gnome.SessionManager
   # For correct cursor scaling under Wayland
-  #- --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons
+  - --env=XCURSOR_PATH=/run/host/user-share/icons:/run/host/share/icons
   # X11 + XShm access
   - --socket=x11
   - --share=ipc
