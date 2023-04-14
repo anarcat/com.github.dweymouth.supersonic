@@ -114,7 +114,7 @@ modules:
     build-commands:
       - . /usr/lib/sdk/golang/enable.sh && CGO_LDFLAGS=-L/app/lib go build -v .
       - . /usr/lib/sdk/golang/enable.sh && CGO_LDFLAGS=-L/app/lib /app/bin/fyne package -os linux -name Supersonic -icon ./res/appicon-500.png
-      - tar -C /app --strip-components=2 -x -v -f /run/build/supersonic/Supersonic.tar.xz
+      - tar -C /app --strip-components=1 -x -v -f /run/build/supersonic/Supersonic.tar.xz
       - ls -al /app/bin/supersonic
     sources:
       - type: archive
